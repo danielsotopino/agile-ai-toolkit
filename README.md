@@ -50,4 +50,4 @@ Criterios de Aceptación:
 
 ## 🌐 Demo en vivo
 
-[Ver demo aquí](https://tu-usuario.github.io/user-story-generator/)
+[Ver demo aquí](https://danielsotopino.github.io/test-case-generator/)
