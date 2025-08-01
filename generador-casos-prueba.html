@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Casos de Prueba</title>
+    <meta name="description" content="Generador automático de casos de prueba usando IA. Soporta OpenAI, Anthropic, Google Gemini y más.">
+    <meta name="keywords" content="casos de prueba, testing, QA, IA, automatización">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body class="bg-gray-50">
+    <div class="max-w-6xl mx-auto p-6 bg-white min-h-screen">
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">
+                Generador de Casos de Prueba
+            </h1>
+            <p class="text-gray-600">
+                Genera casos de prueba automáticamente usando IA
+            </p>
+        </div>
+
+        <!-- Configuración de IA -->
+        <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <h3 class="text-lg font-semibold text-blue-800 mb-3">Configuración de IA</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Servicio de IA</label>
+                    <select id="aiService" class="w-full p-2 border border-gray-300 rounded-lg" onchange="updateModelOptions()">
+                        <option value="openai">OpenAI (GPT-4)</option>
+                        <option value="anthropic">Anthropic (Claude)</option>
+                        <option value="google">Google (Gemini)</option>
+                        <option value="openrouter">OpenRouter (Múltiples modelos)</option>
+                        <option value="custom">Personalizado</option>
+                    </select>
+                </div>
+                <div id="modelSelection" style="display: none;">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Modelo</label>
+                    <select id="aiModel" class="w-full p-2 border border-gray-300 rounded-lg">
+                        <!-- Options will be populated by JavaScript -->
+                    </select>
+                </div>
+                <div id="customFields" style="display: none;" class="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Endpoint URL</label>
+                        <input type="text" id="customEndpoint" placeholder="https://api.example.com/v1/chat/completions" 
+                               class="w-full p-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Modelo</label>
+                        <input type="text" id="customModel" placeholder="gpt-4o-mini, claude-3-haiku, etc." 
+                               class="w-full p-2 border border-gray-300 rounded-lg">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">API Key</label>
+                    <input type="password" id="apiKey" placeholder="Ingresa tu API key aquí" 
+                           class="w-full p-2 border border-gray-300 rounded-lg">
+                </div>
+            </div>
+            <div class="mt-3">
+                <button onclick="testConnection()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                    Probar Conexión
+                </button>
+                <span id="connectionStatus" class="ml-2 text-sm"></span>
+            </div>
+        </div>
+
+        <!-- Panel de entrada -->
+        <div class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Contenido Completo
+                    </label>
+                    <div class="mb-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                        <p class="text-sm text-blue-800 mb-2">
+                            <strong>Pega aquí todo el contenido que incluya:</strong>
+                        </p>
+                        <ul class="text-sm text-blue-700 space-y-1">
+                            <li>• <strong>ID de JIRA:</strong> DRAC-1557, PROJ-123, etc.</li>
+                            <li>• <strong>Historia de Usuario:</strong> Como... quiero... para...</li>
+                            <li>• <strong>Criterios de Aceptación:</strong> Lista de criterios</li>
+                        </ul>
+                    </div>
+                    <textarea
+                        id="fullContent"
+                        placeholder="Ejemplo:
+
+DRAC-1557
+
+Como usuario registrado, quiero poder iniciar sesión en el sistema para acceder a mi perfil personal
+
+Criterios de Aceptación:
+- El usuario debe poder ingresar email y contraseña
+- El sistema debe validar las credenciales
+- Si las credenciales son correctas, redirigir al dashboard
+- Si las credenciales son incorrectas, mostrar mensaje de error"
+                        class="w-full h-64 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-sm"
+                    ></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-3">
+                        Tipos de casos a generar
+                    </label>
+                    <div class="space-y-2">
+                        <label class="flex items-center">
+                            <input type="checkbox" id="positive" checked class="mr-2">
+                            Casos positivos (flujo normal)
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" id="negative" checked class="mr-2">
+                            Casos negativos (validaciones)
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" id="edge" checked class="mr-2">
+                            Casos límite (edge cases)
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" id="noImpact" checked class="mr-2">
+                            Casos de no impacto
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" id="regression" checked class="mr-2">
+                            Casos de regresión
+                        </label>
+                    </div>
+                </div>
+
+                <button
+                    onclick="generateTestCases()"
+                    id="generateBtn"
+                    class="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                >
+                    Generar Casos de Prueba
+                </button>
+            </div>
+
+        <!-- Panel de resultados -->
+        <div class="mt-8 space-y-6" id="resultsPanel">
+                <div id="loadingIndicator" style="display: none;" class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                    <p class="text-yellow-800">Generando casos de prueba...</p>
+                </div>
+                
+                <div id="resultsContainer" style="display: none;">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">
+                        Casos generados (<span id="casesCount">0</span>)
+                    </h3>
+                    <div class="bg-gray-50 rounded-lg p-4 max-h-96 overflow-y-auto">
+                        <div class="overflow-x-auto">
+                            <table class="w-full bg-white rounded-lg shadow-sm" id="resultsTable">
+                                <thead class="bg-gray-100">
+                                    <tr>
+                                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">PBI en JIRA</th>
+                                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Caso de prueba</th>
+                                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Estado</th>
+                                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Precondiciones</th>
+                                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Procedimiento</th>
+                                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Datos de ingreso</th>
+                                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Resultado esperado</th>
+                                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Resultado obtenido</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="resultsTableBody" class="divide-y divide-gray-200">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">Acciones</h3>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button onclick="generateMoreTestCases()" class="flex items-center justify-center gap-2 bg-blue-600 text-white py-2 px-3 rounded-lg hover:bg-blue-700 transition-colors">
+                                <i data-lucide="plus" class="w-4 h-4"></i>
+                                Generar Más
+                            </button>
+                            <button onclick="exportToGoogleSheets()" class="flex items-center justify-center gap-2 bg-green-600 text-white py-2 px-3 rounded-lg hover:bg-green-700 transition-colors">
+                                <i data-lucide="table" class="w-4 h-4"></i>
+                                Google Sheets
+                            </button>
+                            <button onclick="exportToMarkdown()" class="flex items-center justify-center gap-2 bg-gray-600 text-white py-2 px-3 rounded-lg hover:bg-gray-700 transition-colors">
+                                <i data-lucide="file" class="w-4 h-4"></i>
+                                Markdown
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            <div id="emptyState" class="text-center text-gray-500">
+                <p>Los casos de prueba aparecerán aquí una vez que los generes</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let testCases = [];
+
+        // Inicializar iconos de Lucide
+        lucide.createIcons();
+
+        // Configuración de modelos por servicio
+        const modelConfigs = {
+            openai: [
+                { value: 'gpt-4o-mini', label: 'GPT-4o Mini (Más barato)', cost: 'Bajo' },
+                { value: 'gpt-4o', label: 'GPT-4o (Recomendado)', cost: 'Medio' },
+                { value: 'gpt-4', label: 'GPT-4 (Premium)', cost: 'Alto' }
+            ],
+            anthropic: [
+                { value: 'claude-3-haiku-20240307', label: 'Claude 3 Haiku (Más barato)', cost: 'Bajo' },
+                { value: 'claude-3-sonnet-20240229', label: 'Claude 3 Sonnet (Recomendado)', cost: 'Medio' },
+                { value: 'claude-3-opus-20240229', label: 'Claude 3 Opus (Premium)', cost: 'Alto' }
+            ],
+            google: [
+                { value: 'gemini-1.5-flash', label: 'Gemini 1.5 Flash (Más barato)', cost: 'Bajo' },
+                { value: 'gemini-1.5-pro', label: 'Gemini 1.5 Pro (Recomendado)', cost: 'Medio' },
+                { value: 'gemini-pro', label: 'Gemini Pro (Estándar)', cost: 'Medio' }
+            ],
+            openrouter: [
+                { value: 'openai/gpt-4o-mini', label: 'GPT-4o Mini (Más barato)', cost: 'Bajo' },
+                { value: 'google/gemini-flash-1.5', label: 'Gemini 1.5 Flash (Barato)', cost: 'Bajo' },
+                { value: 'anthropic/claude-3-haiku', label: 'Claude 3 Haiku (Barato)', cost: 'Bajo' },
+                { value: 'meta-llama/llama-3.1-8b-instruct:free', label: 'Llama 3.1 8B (Gratis)', cost: 'Gratis' },
+                { value: 'anthropic/claude-3-sonnet', label: 'Claude 3 Sonnet (Medio)', cost: 'Medio' },
+                { value: 'openai/gpt-4o', label: 'GPT-4o (Medio)', cost: 'Medio' },
+                { value: 'google/gemini-pro-1.5', label: 'Gemini 1.5 Pro (Medio)', cost: 'Medio' }
+            ]
+        };
+
+        function updateModelOptions() {
+            const service = document.getElementById('aiService').value;
+            const modelSelect = document.getElementById('aiModel');
+            const modelSelection = document.getElementById('modelSelection');
+            const customFields = document.getElementById('customFields');
+
+            // Ocultar todos los campos primero
+            modelSelection.style.display = 'none';
+            customFields.style.display = 'none';
+
+            if (service === 'openrouter' || service === 'google') {
+                modelSelection.style.display = 'block';
+                modelSelect.innerHTML = '';
+                
+                modelConfigs[service].forEach(model => {
+                    const option = document.createElement('option');
+                    option.value = model.value;
+                    option.textContent = `${model.label} - Costo: ${model.cost}`;
+                    modelSelect.appendChild(option);
+                });
+            } else if (service === 'custom') {
+                customFields.style.display = 'block';
+            }
+        }
+
+        async function testConnection() {
+            const service = document.getElementById('aiService').value;
+            const apiKey = document.getElementById('apiKey').value;
+            const statusElement = document.getElementById('connectionStatus');
+
+            if (!apiKey) {
+                statusElement.innerHTML = '<span class="text-red-600">❌ API Key requerida</span>';
+                return;
+            }
+
+            statusElement.innerHTML = '<span class="text-blue-600">🔄 Probando conexión...</span>';
+
+            try {
+                const response = await callAI('Responde solo "OK"', service, apiKey);
+                if (response) {
+                    statusElement.innerHTML = '<span class="text-green-600">✅ Conexión exitosa</span>';
+                } else {
+                    statusElement.innerHTML = '<span class="text-red-600">❌ Conexión fallida</span>';
+                }
+            } catch (error) {
+                statusElement.innerHTML = '<span class="text-red-600">❌ Error: ' + error.message + '</span>';
+            }
+        }
+
+        async function callAI(prompt, service, apiKey) {
+            let endpoints = {
+                openai: 'https://api.openai.com/v1/chat/completions',
+                anthropic: 'https://api.anthropic.com/v1/messages',
+                google: 'https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent',
+                openrouter: 'https://openrouter.ai/api/v1/chat/completions'
+            };
+
+            // Para custom, usar el endpoint personalizado
+            if (service === 'custom') {
+                const customEndpoint = document.getElementById('customEndpoint').value;
+                if (!customEndpoint) {
+                    throw new Error('Endpoint URL requerido para configuración personalizada');
+                }
+                endpoints.custom = customEndpoint;
+            }
+
+            const headers = {
+                'Content-Type': 'application/json'
+            };
+
+            let body;
+
+            let selectedModel;
+            let endpoint;
+            
+            switch (service) {
+                case 'openai':
+                    selectedModel = modelConfigs.openai[0].value; // Default to cheapest
+                    headers['Authorization'] = `Bearer ${apiKey}`;
+                    endpoint = endpoints.openai;
+                    body = {
+                        model: selectedModel,
+                        messages: [{ role: 'user', content: prompt }],
+                        max_tokens: 2000
+                    };
+                    break;
+
+                case 'anthropic':
+                    selectedModel = modelConfigs.anthropic[0].value; // Default to cheapest
+                    headers['x-api-key'] = apiKey;
+                    headers['anthropic-version'] = '2023-06-01';
+                    endpoint = endpoints.anthropic;
+                    body = {
+                        model: selectedModel,
+                        max_tokens: 2000,
+                        messages: [{ role: 'user', content: prompt }]
+                    };
+                    break;
+
+                case 'google':
+                    selectedModel = document.getElementById('aiModel').value || modelConfigs.google[0].value;
+                    headers['x-goog-api-key'] = apiKey;
+                    endpoint = endpoints.google.replace('{model}', selectedModel);
+                    body = {
+                        contents: [{
+                            parts: [{ text: prompt }]
+                        }],
+                        generationConfig: {
+                            maxOutputTokens: 2000
+                        }
+                    };
+                    break;
+
+                case 'openrouter':
+                    selectedModel = document.getElementById('aiModel').value || modelConfigs.openrouter[0].value;
+                    headers['Authorization'] = `Bearer ${apiKey}`;
+                    headers['HTTP-Referer'] = window.location.href;
+                    headers['X-Title'] = 'Generador de Casos de Prueba';
+                    endpoint = endpoints.openrouter;
+                    body = {
+                        model: selectedModel,
+                        messages: [{ role: 'user', content: prompt }],
+                        max_tokens: 2000
+                    };
+                    break;
+
+                case 'custom':
+                    selectedModel = document.getElementById('customModel').value;
+                    if (!selectedModel) {
+                        throw new Error('Modelo requerido para configuración personalizada');
+                    }
+                    headers['Authorization'] = `Bearer ${apiKey}`;
+                    endpoint = endpoints.custom;
+                    body = {
+                        model: selectedModel,
+                        messages: [{ role: 'user', content: prompt }],
+                        max_tokens: 2000
+                    };
+                    break;
+            }
+
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(body)
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error ${response.status}: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+
+            switch (service) {
+                case 'openai':
+                case 'openrouter':
+                case 'custom':
+                    return data.choices[0].message.content;
+                case 'anthropic':
+                    return data.content[0].text;
+                case 'google':
+                    return data.candidates[0].content.parts[0].text;
+            }
+        }
+
+        async function generateTestCases() {
+            const fullContent = document.getElementById('fullContent').value;
+            const service = document.getElementById('aiService').value;
+            const apiKey = document.getElementById('apiKey').value;
+
+            if (!fullContent.trim()) {
+                alert('Por favor, ingresa el contenido completo');
+                return;
+            }
+
+            if (!apiKey) {
+                alert('Por favor, configura tu API Key');
+                return;
+            }
+
+            const selectedTypes = [];
+            ['positive', 'negative', 'edge', 'noImpact', 'regression'].forEach(type => {
+                if (document.getElementById(type).checked) {
+                    const typeNames = {
+                        positive: 'casos positivos (flujo normal)',
+                        negative: 'casos negativos (validaciones y errores)',
+                        edge: 'casos límite (edge cases)',
+                        noImpact: 'casos de no impacto (funcionalidades no afectadas)',
+                        regression: 'casos de regresión (verificar que fixes anteriores funcionen)'
+                    };
+                    selectedTypes.push(typeNames[type]);
+                }
+            });
+
+            const selectedTypesText = selectedTypes.join(', ');
+
+            const prompt = `Analiza este contenido y genera casos de prueba:
+
+${fullContent}
+
+Tipos: ${selectedTypesText}
+
+Formato JSON:
+{
+  "casos": [
+    {
+      "pbiJira": "[ID] |  | [criterio]",
+      "caso": "Validar que [descripción]",
+      "estado": "",
+      "precondiciones": "[condiciones]",
+      "procedimiento": "1. [paso] 2. [paso] 3. [paso]",
+      "datosIngreso": "",
+      "resultadoEsperado": "[resultado]",
+      "resultadoObtenido": ""
+    }
+  ]
+}
+
+Genera 4-5 casos. Solo JSON válido.`;
+
+            document.getElementById('generateBtn').disabled = true;
+            document.getElementById('generateBtn').textContent = 'Generando...';
+            document.getElementById('loadingIndicator').style.display = 'block';
+            document.getElementById('emptyState').style.display = 'none';
+
+            try {
+                const response = await callAI(prompt, service, apiKey);
+                
+                // Limpiar la respuesta removiendo markdown si existe
+                let cleanResponse = response.trim();
+                if (cleanResponse.startsWith('```json')) {
+                    cleanResponse = cleanResponse.replace(/^```json\s*/, '').replace(/\s*```$/, '');
+                } else if (cleanResponse.startsWith('```')) {
+                    cleanResponse = cleanResponse.replace(/^```\s*/, '').replace(/\s*```$/, '');
+                }
+                
+                // Buscar el JSON en la respuesta si está mezclado con texto
+                const jsonMatch = cleanResponse.match(/\{[\s\S]*\}/);
+                if (jsonMatch) {
+                    cleanResponse = jsonMatch[0];
+                }
+                
+                const parsedResponse = JSON.parse(cleanResponse);
+                
+                if (parsedResponse.casos && Array.isArray(parsedResponse.casos)) {
+                    testCases = parsedResponse.casos;
+                    displayResults();
+                } else {
+                    throw new Error('Formato de respuesta inválido');
+                }
+            } catch (error) {
+                console.error('Error generando casos:', error);
+                alert('Error al generar los casos de prueba: ' + error.message);
+            } finally {
+                document.getElementById('generateBtn').disabled = false;
+                document.getElementById('generateBtn').textContent = 'Generar Casos de Prueba';
+                document.getElementById('loadingIndicator').style.display = 'none';
+            }
+        }
+
+        function displayResults() {
+            const tbody = document.getElementById('resultsTableBody');
+            tbody.innerHTML = '';
+
+            testCases.forEach((tc, index) => {
+                const row = tbody.insertRow();
+                row.className = 'hover:bg-gray-50';
+                row.innerHTML = `
+                    <td class="px-3 py-2 text-sm text-gray-900">${tc.pbiJira || ''}</td>
+                    <td class="px-3 py-2 text-sm text-gray-900">${tc.caso || ''}</td>
+                    <td class="px-3 py-2 text-sm text-gray-500">${tc.estado || ''}</td>
+                    <td class="px-3 py-2 text-sm text-gray-900">${tc.precondiciones || ''}</td>
+                    <td class="px-3 py-2 text-sm text-gray-900">${tc.procedimiento || ''}</td>
+                    <td class="px-3 py-2 text-sm text-gray-500">${tc.datosIngreso || ''}</td>
+                    <td class="px-3 py-2 text-sm text-gray-900">${tc.resultadoEsperado || ''}</td>
+                    <td class="px-3 py-2 text-sm text-gray-500">${tc.resultadoObtenido || ''}</td>
+                `;
+            });
+
+            document.getElementById('casesCount').textContent = testCases.length;
+            document.getElementById('resultsContainer').style.display = 'block';
+        }
+
+        function exportToGoogleSheets() {
+            const headers = ['PBI en JIRA', 'Caso de prueba', 'Estado', 'Precondiciones', 'Procedimiento', 'Datos de ingreso', 'Resultado esperado', 'Resultado obtenido'];
+            const rows = testCases.map(tc => [
+                tc.pbiJira || '',
+                tc.caso || '',
+                tc.estado || '',
+                tc.precondiciones || '',
+                tc.procedimiento || '',
+                tc.datosIngreso || '',
+                tc.resultadoEsperado || '',
+                tc.resultadoObtenido || ''
+            ]);
+            
+            const content = [headers, ...rows].map(row => row.join('\t')).join('\n');
+            
+            navigator.clipboard.writeText(content).then(() => {
+                alert('¡Copiado! Ya puedes pegarlo en Google Sheets');
+            }).catch(() => {
+                const textArea = document.createElement('textarea');
+                textArea.value = content;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                alert('¡Copiado! Ya puedes pegarlo en Google Sheets');
+            });
+        }
+
+
+        function exportToMarkdown() {
+            let markdown = '# Casos de Prueba\n\n';
+            testCases.forEach((tc, index) => {
+                markdown += `## Caso ${index + 1}: ${tc.caso}\n\n`;
+                markdown += `**PBI en JIRA:** ${tc.pbiJira}\n\n`;
+                markdown += `**Estado:** ${tc.estado}\n\n`;
+                markdown += `**Precondiciones:** ${tc.precondiciones}\n\n`;
+                markdown += `**Procedimiento:** ${tc.procedimiento}\n\n`;
+                markdown += `**Datos de ingreso:** ${tc.datosIngreso}\n\n`;
+                markdown += `**Resultado esperado:** ${tc.resultadoEsperado}\n\n`;
+                markdown += `**Resultado obtenido:** ${tc.resultadoObtenido}\n\n`;
+                markdown += '---\n\n';
+            });
+            
+            const blob = new Blob([markdown], { type: 'text/markdown' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'casos_de_prueba.md';
+            link.click();
+        }
+
+        async function generateMoreTestCases() {
+            const fullContent = document.getElementById('fullContent').value;
+            const service = document.getElementById('aiService').value;
+            const apiKey = document.getElementById('apiKey').value;
+
+            if (!fullContent.trim()) {
+                alert('Por favor, ingresa el contenido completo');
+                return;
+            }
+
+            if (!apiKey) {
+                alert('Por favor, configura tu API Key');
+                return;
+            }
+
+            if (testCases.length === 0) {
+                alert('Primero genera algunos casos de prueba');
+                return;
+            }
+
+            const selectedTypes = [];
+            ['positive', 'negative', 'edge', 'noImpact', 'regression'].forEach(type => {
+                if (document.getElementById(type).checked) {
+                    const typeNames = {
+                        positive: 'casos positivos (flujo normal)',
+                        negative: 'casos negativos (validaciones y errores)',
+                        edge: 'casos límite (edge cases)',
+                        noImpact: 'casos de no impacto (funcionalidades no afectadas)',
+                        regression: 'casos de regresión (verificar que fixes anteriores funcionen)'
+                    };
+                    selectedTypes.push(typeNames[type]);
+                }
+            });
+
+            const selectedTypesText = selectedTypes.join(', ');
+
+            // Crear resumen de casos existentes
+            const existingCasesSummary = testCases.map((tc, index) => 
+                `${index + 1}. ${tc.caso}`
+            ).join('\n');
+
+            const prompt = `Basándote en este contenido y los casos ya generados, crea NUEVOS casos de prueba adicionales que complementen los existentes:
+
+CONTENIDO ORIGINAL:
+${fullContent}
+
+CASOS YA GENERADOS:
+${existingCasesSummary}
+
+Tipos a generar: ${selectedTypesText}
+
+INSTRUCCIONES:
+- Genera 3-4 casos NUEVOS y DIFERENTES a los ya existentes
+- Enfócate en aspectos no cubiertos por los casos actuales
+- Busca escenarios adicionales, variaciones o casos más específicos
+- NO repitas casos similares a los ya generados
+
+Formato JSON:
+{
+  "casos": [
+    {
+      "pbiJira": "[ID] |  | [criterio]",
+      "caso": "Validar que [descripción]",
+      "estado": "",
+      "precondiciones": "[condiciones]",
+      "procedimiento": "1. [paso] 2. [paso] 3. [paso]",
+      "datosIngreso": "",
+      "resultadoEsperado": "[resultado]",
+      "resultadoObtenido": ""
+    }
+  ]
+}
+
+Solo JSON válido.`;
+
+            const generateMoreBtn = document.querySelector('button[onclick="generateMoreTestCases()"]');
+            generateMoreBtn.disabled = true;
+            generateMoreBtn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Generando...';
+            
+            document.getElementById('loadingIndicator').style.display = 'block';
+
+            try {
+                const response = await callAI(prompt, service, apiKey);
+                
+                // Limpiar la respuesta removiendo markdown si existe
+                let cleanResponse = response.trim();
+                if (cleanResponse.startsWith('```json')) {
+                    cleanResponse = cleanResponse.replace(/^```json\s*/, '').replace(/\s*```$/, '');
+                } else if (cleanResponse.startsWith('```')) {
+                    cleanResponse = cleanResponse.replace(/^```\s*/, '').replace(/\s*```$/, '');
+                }
+                
+                // Buscar el JSON en la respuesta si está mezclado con texto
+                const jsonMatch = cleanResponse.match(/\{[\s\S]*\}/);
+                if (jsonMatch) {
+                    cleanResponse = jsonMatch[0];
+                }
+                
+                const parsedResponse = JSON.parse(cleanResponse);
+                
+                if (parsedResponse.casos && Array.isArray(parsedResponse.casos)) {
+                    // Agregar los nuevos casos a los existentes
+                    testCases = [...testCases, ...parsedResponse.casos];
+                    displayResults();
+                } else {
+                    throw new Error('Formato de respuesta inválido');
+                }
+            } catch (error) {
+                console.error('Error generando más casos:', error);
+                alert('Error al generar más casos de prueba: ' + error.message);
+            } finally {
+                generateMoreBtn.disabled = false;
+                generateMoreBtn.innerHTML = '<i data-lucide="plus" class="w-4 h-4"></i> Generar Más';
+                lucide.createIcons(); // Recrear iconos
+                document.getElementById('loadingIndicator').style.display = 'none';
+            }
+        }
+
+    </script>
+</body>
+</html>
