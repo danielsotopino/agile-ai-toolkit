@@ -3,15 +3,342 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generador de Casos de Prueba</title>
-    <meta name="description" content="Generador automático de casos de prueba usando IA. Soporta OpenAI, Anthropic, Google Gemini y más.">
-    <meta name="keywords" content="casos de prueba, testing, QA, IA, automatización">
-    <script>
-        // Redirect to the main app
-        window.location.href = './generador-casos-prueba.html';
-    </script>
+    <title>Agile AI Toolkit - Herramientas de IA para Desarrollo Ágil</title>
+    <meta name="description" content="Conjunto de herramientas de IA para generar historias de usuario y casos de prueba automáticamente. Soporta OpenAI, Anthropic, Google Gemini y más.">
+    <meta name="keywords" content="historias de usuario, casos de prueba, testing, QA, IA, automatización, agile, scrum">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 </head>
-<body>
-    <p>Redirigiendo...</p>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+    <div class="max-w-6xl mx-auto p-6">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <div class="flex justify-center items-center mb-6">
+                <div class="bg-blue-600 rounded-full p-4 mr-4">
+                    <i data-lucide="zap" class="w-12 h-12 text-white"></i>
+                </div>
+                <div>
+                    <h1 class="text-4xl font-bold text-gray-800 mb-2">
+                        Agile AI Toolkit
+                    </h1>
+                    <p class="text-xl text-gray-600">
+                        Herramientas de IA para Desarrollo Ágil
+                    </p>
+                </div>
+            </div>
+            <p class="text-lg text-gray-700 max-w-3xl mx-auto">
+                Acelera tu proceso de desarrollo con herramientas inteligentes que generan 
+                historias de usuario y casos de prueba automáticamente usando IA.
+            </p>
+        </div>
+
+        <!-- Tools Grid -->
+        <div class="grid md:grid-cols-2 gap-8 mb-12">
+            <!-- User Story Generator -->
+            <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden">
+                <div class="bg-gradient-to-r from-green-500 to-emerald-600 p-6 text-white">
+                    <div class="flex items-center mb-4">
+                        <i data-lucide="book-open" class="w-8 h-8 mr-3"></i>
+                        <h2 class="text-2xl font-bold">Generador de Historias de Usuario</h2>
+                    </div>
+                    <p class="text-green-100">
+                        Genera historias de usuario siguiendo criterios INVEST con análisis iterativo
+                    </p>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-4 mb-6">
+                        <div class="flex items-center text-gray-700">
+                            <i data-lucide="check-circle" class="w-5 h-5 text-green-500 mr-3"></i>
+                            <span>Análisis inteligente de requerimientos</span>
+                        </div>
+                        <div class="flex items-center text-gray-700">
+                            <i data-lucide="check-circle" class="w-5 h-5 text-green-500 mr-3"></i>
+                            <span>Preguntas de clarificación automáticas</span>
+                        </div>
+                        <div class="flex items-center text-gray-700">
+                            <i data-lucide="check-circle" class="w-5 h-5 text-green-500 mr-3"></i>
+                            <span>Historias editables con criterios INVEST</span>
+                        </div>
+                        <div class="flex items-center text-gray-700">
+                            <i data-lucide="check-circle" class="w-5 h-5 text-green-500 mr-3"></i>
+                            <span>Exportación a JIRA/Azure DevOps</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                        <h4 class="font-semibold text-gray-800 mb-2">Proceso híbrido:</h4>
+                        <div class="flex items-center justify-between text-sm text-gray-600">
+                            <span class="flex items-center">
+                                <i data-lucide="file-text" class="w-4 h-4 mr-1"></i>
+                                Requerimiento
+                            </span>
+                            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                            <span class="flex items-center">
+                                <i data-lucide="help-circle" class="w-4 h-4 mr-1"></i>
+                                Análisis
+                            </span>
+                            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                            <span class="flex items-center">
+                                <i data-lucide="book" class="w-4 h-4 mr-1"></i>
+                                Historias
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <a href="generador-historias-usuario.html" 
+                       class="w-full bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center font-medium">
+                        <i data-lucide="play" class="w-5 h-5 mr-2"></i>
+                        Generar Historias de Usuario
+                    </a>
+                </div>
+            </div>
+
+            <!-- Test Case Generator -->
+            <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden">
+                <div class="bg-gradient-to-r from-blue-500 to-indigo-600 p-6 text-white">
+                    <div class="flex items-center mb-4">
+                        <i data-lucide="shield-check" class="w-8 h-8 mr-3"></i>
+                        <h2 class="text-2xl font-bold">Generador de Casos de Prueba</h2>
+                    </div>
+                    <p class="text-blue-100">
+                        Genera casos de prueba automáticamente a partir de historias de usuario
+                    </p>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-4 mb-6">
+                        <div class="flex items-center text-gray-700">
+                            <i data-lucide="check-circle" class="w-5 h-5 text-blue-500 mr-3"></i>
+                            <span>Casos positivos, negativos y límite</span>
+                        </div>
+                        <div class="flex items-center text-gray-700">
+                            <i data-lucide="check-circle" class="w-5 h-5 text-blue-500 mr-3"></i>
+                            <span>Formato estándar para QA teams</span>
+                        </div>
+                        <div class="flex items-center text-gray-700">
+                            <i data-lucide="check-circle" class="w-5 h-5 text-blue-500 mr-3"></i>
+                            <span>Exportación a Google Sheets</span>
+                        </div>
+                        <div class="flex items-center text-gray-700">
+                            <i data-lucide="check-circle" class="w-5 h-5 text-blue-500 mr-3"></i>
+                            <span>Generación iterativa de más casos</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                        <h4 class="font-semibold text-gray-800 mb-2">Tipos de casos:</h4>
+                        <div class="grid grid-cols-2 gap-2 text-sm text-gray-600">
+                            <span class="flex items-center">✅ Positivos</span>
+                            <span class="flex items-center">❌ Negativos</span>
+                            <span class="flex items-center">⚠️ Límite</span>
+                            <span class="flex items-center">🔄 Regresión</span>
+                        </div>
+                    </div>
+                    
+                    <a href="generador-casos-prueba.html" 
+                       class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center font-medium">
+                        <i data-lucide="play" class="w-5 h-5 mr-2"></i>
+                        Generar Casos de Prueba
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Workflow Section -->
+        <div class="bg-white rounded-xl shadow-lg p-8 mb-12">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6 text-center">
+                <i data-lucide="workflow" class="w-6 h-6 inline mr-2"></i>
+                Flujo de Trabajo Recomendado
+            </h3>
+            <div class="grid md:grid-cols-4 gap-6">
+                <div class="text-center">
+                    <div class="bg-purple-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="lightbulb" class="w-8 h-8 text-purple-600"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-800 mb-2">1. Requerimiento</h4>
+                    <p class="text-sm text-gray-600">Describe tu requerimiento funcional</p>
+                </div>
+                <div class="text-center">
+                    <div class="bg-green-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="book-open" class="w-8 h-8 text-green-600"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-800 mb-2">2. Historias</h4>
+                    <p class="text-sm text-gray-600">Genera historias de usuario estructuradas</p>
+                </div>
+                <div class="text-center">
+                    <div class="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="shield-check" class="w-8 h-8 text-blue-600"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-800 mb-2">3. Casos de Prueba</h4>
+                    <p class="text-sm text-gray-600">Crea casos de prueba comprensivos</p>
+                </div>
+                <div class="text-center">
+                    <div class="bg-orange-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="rocket" class="w-8 h-8 text-orange-600"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-800 mb-2">4. Implementación</h4>
+                    <p class="text-sm text-gray-600">Desarrolla con confianza</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Services -->
+        <div class="bg-white rounded-xl shadow-lg p-8 mb-12">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6 text-center">
+                <i data-lucide="cpu" class="w-6 h-6 inline mr-2"></i>
+                Servicios de IA Compatibles
+            </h3>
+            <div class="grid md:grid-cols-3 lg:grid-cols-5 gap-6">
+                <div class="text-center">
+                    <div class="bg-gray-100 rounded-lg p-4 mb-3">
+                        <div class="w-12 h-12 bg-green-500 rounded-lg mx-auto flex items-center justify-center">
+                            <span class="text-white font-bold text-lg">AI</span>
+                        </div>
+                    </div>
+                    <h4 class="font-semibold text-gray-800">OpenAI</h4>
+                    <p class="text-xs text-gray-600">GPT-4, GPT-4o</p>
+                </div>
+                <div class="text-center">
+                    <div class="bg-gray-100 rounded-lg p-4 mb-3">
+                        <div class="w-12 h-12 bg-orange-500 rounded-lg mx-auto flex items-center justify-center">
+                            <span class="text-white font-bold text-lg">C</span>
+                        </div>
+                    </div>
+                    <h4 class="font-semibold text-gray-800">Anthropic</h4>
+                    <p class="text-xs text-gray-600">Claude 3 Sonnet, Haiku</p>
+                </div>
+                <div class="text-center">
+                    <div class="bg-gray-100 rounded-lg p-4 mb-3">
+                        <div class="w-12 h-12 bg-blue-500 rounded-lg mx-auto flex items-center justify-center">
+                            <span class="text-white font-bold text-lg">G</span>
+                        </div>
+                    </div>
+                    <h4 class="font-semibold text-gray-800">Google</h4>
+                    <p class="text-xs text-gray-600">Gemini 1.5 Pro, Flash</p>
+                </div>
+                <div class="text-center">
+                    <div class="bg-gray-100 rounded-lg p-4 mb-3">
+                        <div class="w-12 h-12 bg-purple-500 rounded-lg mx-auto flex items-center justify-center">
+                            <span class="text-white font-bold text-lg">OR</span>
+                        </div>
+                    </div>
+                    <h4 class="font-semibold text-gray-800">OpenRouter</h4>
+                    <p class="text-xs text-gray-600">Múltiples modelos</p>
+                </div>
+                <div class="text-center">
+                    <div class="bg-gray-100 rounded-lg p-4 mb-3">
+                        <div class="w-12 h-12 bg-gray-500 rounded-lg mx-auto flex items-center justify-center">
+                            <span class="text-white font-bold text-lg">API</span>
+                        </div>
+                    </div>
+                    <h4 class="font-semibold text-gray-800">Personalizado</h4>
+                    <p class="text-xs text-gray-600">Tu propio endpoint</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features -->
+        <div class="bg-white rounded-xl shadow-lg p-8 mb-12">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6 text-center">
+                <i data-lucide="star" class="w-6 h-6 inline mr-2"></i>
+                Características Principales
+            </h3>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="flex items-start">
+                    <div class="bg-blue-100 rounded-lg p-2 mr-4">
+                        <i data-lucide="zap" class="w-6 h-6 text-blue-600"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-gray-800 mb-2">IA Avanzada</h4>
+                        <p class="text-sm text-gray-600">Utiliza los modelos de IA más avanzados para generar contenido de alta calidad</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <div class="bg-green-100 rounded-lg p-2 mr-4">
+                        <i data-lucide="edit-3" class="w-6 h-6 text-green-600"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-gray-800 mb-2">Totalmente Editable</h4>
+                        <p class="text-sm text-gray-600">Edita, refina y personaliza todo el contenido generado</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <div class="bg-purple-100 rounded-lg p-2 mr-4">
+                        <i data-lucide="download" class="w-6 h-6 text-purple-600"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-gray-800 mb-2">Múltiples Formatos</h4>
+                        <p class="text-sm text-gray-600">Exporta a JIRA, Google Sheets, Markdown y más</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <div class="bg-orange-100 rounded-lg p-2 mr-4">
+                        <i data-lucide="shield" class="w-6 h-6 text-orange-600"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-gray-800 mb-2">Privacidad</h4>
+                        <p class="text-sm text-gray-600">Funciona completamente en tu navegador, tus datos no se almacenan</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <div class="bg-red-100 rounded-lg p-2 mr-4">
+                        <i data-lucide="refresh-cw" class="w-6 h-6 text-red-600"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-gray-800 mb-2">Iterativo</h4>
+                        <p class="text-sm text-gray-600">Genera contenido adicional y refina iterativamente</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <div class="bg-indigo-100 rounded-lg p-2 mr-4">
+                        <i data-lucide="users" class="w-6 h-6 text-indigo-600"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-gray-800 mb-2">Metodología Ágil</h4>
+                        <p class="text-sm text-gray-600">Diseñado específicamente para equipos Scrum y Kanban</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center text-gray-600">
+            <p class="mb-4">
+                <i data-lucide="github" class="w-4 h-4 inline mr-1"></i>
+                Herramientas open source para mejorar tu productividad en desarrollo ágil
+            </p>
+            <p class="text-sm">
+                Desarrollado con ❤️ para equipos de desarrollo que buscan optimizar su proceso de trabajo
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Inicializar iconos de Lucide
+        lucide.createIcons();
+
+        // Smooth scroll para navegación interna si se agregan anclas
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Analytics básico (opcional)
+        function trackToolUsage(tool) {
+            // Aquí puedes agregar tracking de analytics si lo necesitas
+            console.log(`Usuario navegó a: ${tool}`);
+        }
+
+        // Agregar tracking a los enlaces
+        document.querySelectorAll('a[href*=".html"]').forEach(link => {
+            link.addEventListener('click', function() {
+                const tool = this.href.includes('historias') ? 'Historias de Usuario' : 'Casos de Prueba';
+                trackToolUsage(tool);
+            });
+        });
+    </script>
 </body>
 </html>
